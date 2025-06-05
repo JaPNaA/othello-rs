@@ -1,0 +1,36 @@
+.gameCell {
+    background-color: #a5b4a5;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    padding: 0;
+    vertical-align: baseline;
+    user-select: none;
+}
+
+.gameCell:hover {
+    background-color: #90a790;
+}
+
+.gameCellContent.white,
+.gameCellContent.black {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin-top: 4px;
+    margin-left: 4px;
+    border: 1px solid #888;
+    color: transparent;
+    box-sizing: border-box;
+}
+
+.gameCellContent.white {
+    background-color: #fff;
+}
+
+.gameCellContent.black {
+    background-color: #000;
+    border-color: #fff;
+}
