@@ -1,15 +1,20 @@
 import init, { JsInterface } from "./wasm/pkg/wasm.js";
+import { Elm } from "./elements.js";
 
 /** @type {HTMLDivElement} */ // @ts-ignore
 const game = document.getElementById("game");
 
-/** @type {HTMLDivElement[][]} */
+/** @type {Elm[][]} */
 const boardCellContents = [];
 
 const lastBoardContents = [];
 
 /** @type {((x: number, y: number) => void)[]} */
 const clickListeners = [];
+
+const whiteScore = new Elm("span");
+const blackScore = new Elm("span");
+const gameOverDisplay = new Elm("div");
 
 initBoard();
 
@@ -48,34 +53,32 @@ function initBoard() {
         game.removeChild(game.lastChild);
     }
 
-    const table = document.createElement("table");
-    table.classList.add("gameTable");
-    const tbody = document.createElement("tbody");
+    const table = new Elm("table").class("gameTable").appendTo(game);
+    const tbody = new Elm("tbody").appendTo(table);
 
     for (let y = 0; y < 8; y++) {
         const boardRow = [];
-        const tr = document.createElement("tr");
+        const tr = new Elm("tr").appendTo(tbody);
 
         for (let x = 0; x < 8; x++) {
-            const cell = document.createElement("td");
-            cell.classList.add("gameCell");
-            cell.addEventListener("click", () => dispatchCellClicked(x, y));
+            const cell = new Elm("td")
+                .class("gameCell")
+                .on("click", () => dispatchCellClicked(x, y))
+                .appendTo(tr);
 
-            const content = document.createElement("div");
-            content.classList.add("gameCellContent", "blank");
-            cell.appendChild(content);
+            const content = new Elm().class("gameCellContent", "blank").appendTo(cell);
 
-            tr.appendChild(cell);
             boardRow.push(content);
         }
 
-        tbody.appendChild(tr);
         boardCellContents.push(boardRow);
         lastBoardContents.push([0, 0, 0, 0, 0, 0, 0, 0]);
     }
 
-    table.appendChild(tbody);
-    game.appendChild(table);
+    new Elm().class("status").append(
+        new Elm().append("Score -- black: ", blackScore, ", white: ", whiteScore),
+        new Elm().append(gameOverDisplay)
+    ).appendTo(game);
 }
 
 /**
@@ -90,24 +93,30 @@ function renderBoard(jsInterface) {
                 const elm = boardCellContents[y][x];
                 switch (jsRep[y][x]) {
                     case 0n:
-                        elm.classList.remove("black", "white");
-                        elm.classList.add("blank");
-                        elm.innerText = "";
+                        elm.removeClass("black")
+                        elm.removeClass("white");
+                        elm.class("blank");
+                        elm.clear();
                         break;
                     case 1n:
-                        elm.classList.remove("blank", "black");
-                        elm.classList.add("white");
-                        elm.innerText = "W";
+                        elm.removeClass("black")
+                        elm.class("white");
+                        elm.removeClass("blank");
+                        elm.replaceContents("W");
                         break;
                     case -1n:
-                        elm.classList.remove("blank", "white");
-                        elm.classList.add("black");
-                        elm.innerText = "B";
+                        elm.class("black")
+                        elm.class("white");
+                        elm.removeClass("blank");
+                        elm.replaceContents("B");
                         break;
                 }
             }
         }
     }
+
+    whiteScore.replaceContents(jsInterface.board_count_pieces(true));
+    blackScore.replaceContents(jsInterface.board_count_pieces(false));
 }
 
 /**

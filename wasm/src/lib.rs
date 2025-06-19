@@ -3,7 +3,7 @@ mod bots;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::bots::{BotRunner, MakeMove, first_valid_bot::Bot};
+use crate::bots::{BotRunner, MakeMove};
 
 #[wasm_bindgen]
 struct JsInterface {
@@ -58,6 +58,18 @@ impl JsInterface {
     pub fn board_try_place(&mut self, x: i8, y: i8, color: bool) -> bool {
         let runner = self.get_runner_mut();
         runner.board.try_place_chip(x, y, color)
+    }
+
+    /// Checks if there is a valid move for a player
+    pub fn board_has_valid_move(&self, color: bool) -> bool {
+        let runner = self.get_runner();
+        runner.board.has_valid_move(color)
+    }
+
+    /// Counts the number of pieces of a color
+    pub fn board_count_pieces(&self, color: bool) -> u16 {
+        let runner = self.get_runner();
+        runner.board.count_pieces(color)
     }
 
     pub fn bot_run_to_end(&mut self) {

@@ -136,6 +136,48 @@ impl Board {
         false
     }
 
+    /// Returns a vector of all valid moves for the specified color
+    pub fn get_all_valid_moves(&self, color: bool) -> Vec<(i8, i8)> {
+        let mut valid_moves = Vec::new();
+
+        for y in 0..8 {
+            for x in 0..8 {
+                if self.is_valid_move(x, y, color) {
+                    valid_moves.push((x, y));
+                }
+            }
+        }
+
+        valid_moves
+    }
+
+    /// Checks if a player has any valid move
+    pub fn has_valid_move(&self, color: bool) -> bool {
+        for y in 0..8 {
+            for x in 0..8 {
+                if self.is_valid_move(x, y, color) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Counts the number of placed pieces on the board for a color
+    pub fn count_pieces(&self, color: bool) -> u16 {
+        let mut count = 0;
+
+        let mut curr = self.filled & (if color { self.color } else { !self.color });
+
+        // Brian Kernighan Algorithm to count 1 digits in binary
+        while curr > 0 {
+            count += 1;
+            curr &= curr - 1;
+        }
+
+        count
+    }
+
     fn is_occupied(&self, x: i8, y: i8) -> bool {
         return ((self.filled >> (y * 8 + x)) & 1) != 0;
     }
