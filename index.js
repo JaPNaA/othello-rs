@@ -1,4 +1,4 @@
-import init, { Board } from "./wasm/pkg/wasm.js";
+import init, { JsInterface } from "./wasm/pkg/wasm.js";
 
 /** @type {HTMLDivElement} */ // @ts-ignore
 const game = document.getElementById("game");
@@ -14,18 +14,30 @@ const clickListeners = [];
 initBoard();
 
 init().then(() => {
-    const board = Board.new();
-    renderBoard(board);
+    const jsInterface = JsInterface.new();
 
-    let currTurn = false;
+    jsInterface.create_new_random_bot();
+    jsInterface.set_bot_as_black();
 
-    clickListeners.push((x, y) => {
-        if (board.try_place_chip(x, y, currTurn)) {
-            currTurn = !currTurn;
-        }
+    jsInterface.create_new_first_valid_move_bot();
+    jsInterface.set_bot_as_white();
 
-        renderBoard(board);
-    });
+    jsInterface.create_game();
+
+    jsInterface.bot_run_to_end();
+
+    renderBoard(jsInterface);
+
+    // let currTurn = false;
+
+    // clickListeners.push((x, y) => {
+    //     if (jsInterface.board_try_place(x, y, currTurn)) {
+    //         // currTurn = !currTurn;
+    //         jsInterface.bot_move();
+    //     }
+
+    //     renderBoard(jsInterface);
+    // });
 });
 
 function initBoard() {
@@ -64,10 +76,10 @@ function initBoard() {
 }
 
 /**
- * @param {Board} board 
+ * @param {JsInterface} jsInterface
  */
-function renderBoard(board) {
-    const jsRep = convertBoardToJsRep(board);
+function renderBoard(jsInterface) {
+    const jsRep = getBoard(jsInterface);
 
     for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 8; x++) {
@@ -105,10 +117,10 @@ function dispatchCellClicked(x, y) {
     }
 }
 
-/** @param {Board} board */
-function convertBoardToJsRep(board) {
-    let filled = board.filled;
-    let color = board.color;
+/** @param {JsInterface} jsInterface */
+function getBoard(jsInterface) {
+    let filled = jsInterface.get_board_filled();
+    let color = jsInterface.get_board_color();
 
     const arr = [];
     for (let i = 0; i < 8; i++) {
