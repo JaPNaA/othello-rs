@@ -42,12 +42,7 @@ impl JsInterface {
     }
 
     pub fn create_game(&mut self) {
-        match (self.black_bot.take(), self.white_bot.take()) {
-            (Some(black_bot), Some(white_bot)) => {
-                self.bot_runner = Some(BotRunner::new(black_bot, white_bot))
-            }
-            (_, _) => panic!("Black and white bots must be set"),
-        }
+        self.bot_runner = Some(BotRunner::new(self.black_bot.take(), self.white_bot.take()));
     }
 
     pub fn get_board_filled(&self) -> u64 {
@@ -68,6 +63,16 @@ impl JsInterface {
     pub fn bot_run_to_end(&mut self) {
         let runner = self.get_runner_mut();
         runner.run_game_to_end();
+    }
+
+    pub fn bot_run_white(&mut self) -> bool {
+        let runner = self.get_runner_mut();
+        runner.run_white_bot()
+    }
+
+    pub fn bot_run_black(&mut self) -> bool {
+        let runner = self.get_runner_mut();
+        runner.run_black_bot()
     }
 
     fn get_runner(&self) -> &BotRunner {

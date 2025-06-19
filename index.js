@@ -17,9 +17,9 @@ init().then(() => {
     const jsInterface = JsInterface.new();
 
     jsInterface.create_new_random_bot();
-    jsInterface.set_bot_as_black();
+    // jsInterface.set_bot_as_black();
 
-    jsInterface.create_new_first_valid_move_bot();
+    // jsInterface.create_new_first_valid_move_bot();
     jsInterface.set_bot_as_white();
 
     jsInterface.create_game();
@@ -30,14 +30,17 @@ init().then(() => {
 
     // let currTurn = false;
 
-    // clickListeners.push((x, y) => {
-    //     if (jsInterface.board_try_place(x, y, currTurn)) {
-    //         // currTurn = !currTurn;
-    //         jsInterface.bot_move();
-    //     }
+    clickListeners.push((x, y) => {
+        if (jsInterface.board_try_place(x, y, false)) {
+            // currTurn = !currTurn;
+            setTimeout(() => {
+                jsInterface.bot_run_white();
+                renderBoard(jsInterface);
+            }, 300);
+        }
 
-    //     renderBoard(jsInterface);
-    // });
+        renderBoard(jsInterface);
+    });
 });
 
 function initBoard() {
