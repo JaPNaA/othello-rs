@@ -4,6 +4,9 @@ import { Elm } from "./elements.js";
 /** @type {HTMLDivElement} */ // @ts-ignore
 const game = document.getElementById("game");
 
+/** @type {HTMLButtonElement} */ // @ts-ignore
+const rerunButton = document.getElementById("rerunButton");
+
 /** @type {Elm[][]} */
 const boardCellContents = [];
 
@@ -12,40 +15,33 @@ const lastBoardContents = [];
 /** @type {((x: number, y: number) => void)[]} */
 const clickListeners = [];
 
-const whiteScore = new Elm("span");
-const blackScore = new Elm("span");
+const whiteScore = new Elm("span").class("score");
+const blackScore = new Elm("span").class("score");
 const gameOverDisplay = new Elm("div");
 
 initBoard();
 
 init().then(() => {
     const jsInterface = JsInterface.new();
+    runGame(jsInterface);
 
-    jsInterface.create_new_random_bot();
-    // jsInterface.set_bot_as_black();
-
-    // jsInterface.create_new_first_valid_move_bot();
-    jsInterface.set_bot_as_white();
-
-    jsInterface.create_game();
-
-    jsInterface.bot_run_to_end();
-
-    renderBoard(jsInterface);
+    rerunButton.addEventListener("click", () => {
+        runGame(jsInterface);
+    });
 
     // let currTurn = false;
 
-    clickListeners.push((x, y) => {
-        if (jsInterface.board_try_place(x, y, false)) {
-            // currTurn = !currTurn;
-            setTimeout(() => {
-                jsInterface.bot_run_white();
-                renderBoard(jsInterface);
-            }, 300);
-        }
+    // clickListeners.push((x, y) => {
+    //     if (jsInterface.board_try_place(x, y, false)) {
+    //         // currTurn = !currTurn;
+    //         setTimeout(() => {
+    //             jsInterface.bot_run_white();
+    //             renderBoard(jsInterface);
+    //         }, 300);
+    //     }
 
-        renderBoard(jsInterface);
-    });
+    //     renderBoard(jsInterface);
+    // });
 });
 
 function initBoard() {
@@ -82,6 +78,23 @@ function initBoard() {
 }
 
 /**
+ * @param {JsInterface} jsInterface 
+ */
+function runGame(jsInterface) {
+    jsInterface.create_new_random_bot();
+    jsInterface.set_bot_as_black();
+
+    jsInterface.create_new_first_valid_move_bot();
+    jsInterface.set_bot_as_white();
+
+    jsInterface.create_game();
+
+    jsInterface.bot_run_to_end();
+
+    renderBoard(jsInterface);
+}
+
+/**
  * @param {JsInterface} jsInterface
  */
 function renderBoard(jsInterface) {
@@ -106,7 +119,7 @@ function renderBoard(jsInterface) {
                         break;
                     case -1n:
                         elm.class("black")
-                        elm.class("white");
+                        elm.removeClass("white");
                         elm.removeClass("blank");
                         elm.replaceContents("B");
                         break;
@@ -115,8 +128,21 @@ function renderBoard(jsInterface) {
         }
     }
 
-    whiteScore.replaceContents(jsInterface.board_count_pieces(true));
-    blackScore.replaceContents(jsInterface.board_count_pieces(false));
+    const whites = jsInterface.board_count_pieces(true);
+    const blacks = jsInterface.board_count_pieces(false);
+    whiteScore.replaceContents(whites);
+    blackScore.replaceContents(blacks);
+
+    if (whites > blacks) {
+        whiteScore.class("leading");
+        blackScore.removeClass("leading");
+    } else if (blacks > whites) {
+        whiteScore.removeClass("leading");
+        blackScore.class("leading");
+    } else {
+        whiteScore.removeClass("leading");
+        blackScore.removeClass("leading");
+    }
 }
 
 /**

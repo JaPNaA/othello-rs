@@ -34,3 +34,7 @@
     background-color: #000;
     border-color: #fff;
 }
+
+.score.leading {
+    font-weight: bold;
+}
