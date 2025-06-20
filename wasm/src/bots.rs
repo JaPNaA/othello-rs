@@ -1,6 +1,10 @@
 use crate::board::Board;
 
+pub mod center_bot;
+pub mod edge_bot;
+pub mod edge_exclusive_bot;
 pub mod first_valid_bot;
+pub mod last_valid_bot;
 pub mod random_bot;
 
 pub struct BotRunner {
@@ -22,7 +26,7 @@ impl BotRunner {
     }
 
     pub fn run_game_to_end(&mut self) {
-        let (black_bot, white_bot) = match (&self.black_bot, &self.white_bot) {
+        let (black_bot, white_bot) = match (&mut self.black_bot, &mut self.white_bot) {
             (Some(black_bot), Some(white_bot)) => (black_bot, white_bot),
             _ => return,
         };
@@ -49,7 +53,7 @@ impl BotRunner {
     /// Runs the black bot's move once. Returns true if move was successful.
     /// If the move was unsuccessful, assume the opponent's victory.
     pub fn run_black_bot(&mut self) -> bool {
-        if let Some(black_bot) = &self.black_bot {
+        if let Some(black_bot) = &mut self.black_bot {
             let black_move = black_bot.make_move(&self.board, false);
             return black_move.0 >= 0
                 && black_move.1 >= 0
@@ -62,7 +66,7 @@ impl BotRunner {
     /// Runs the white bot's move once. Returns true if move was successful.
     /// If the move was unsuccessful, assume the opponent's victory.
     pub fn run_white_bot(&mut self) -> bool {
-        if let Some(white_bot) = &self.white_bot {
+        if let Some(white_bot) = &mut self.white_bot {
             let white_move = white_bot.make_move(&self.board, true);
             return white_move.0 >= 0
                 && white_move.1 >= 0
@@ -74,5 +78,5 @@ impl BotRunner {
 }
 
 pub trait MakeMove {
-    fn make_move(&self, board: &Board, color: bool) -> (i8, i8);
+    fn make_move(&mut self, board: &Board, color: bool) -> (i8, i8);
 }

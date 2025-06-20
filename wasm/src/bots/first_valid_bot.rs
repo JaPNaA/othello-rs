@@ -1,5 +1,6 @@
 use crate::{board::Board, bots::MakeMove};
 
+/// This bot always chooses the first valid move.
 pub struct Bot {}
 
 impl Bot {
@@ -8,8 +9,9 @@ impl Bot {
     }
 }
 
+/// This bot always chooses the first valid move
 impl MakeMove for Bot {
-    fn make_move(&self, board: &Board, color: bool) -> (i8, i8) {
+    fn make_move(&mut self, board: &Board, color: bool) -> (i8, i8) {
         for y in 0..8 {
             for x in 0..8 {
                 if board.is_valid_move(x, y, color) {
@@ -18,6 +20,6 @@ impl MakeMove for Bot {
             }
         }
 
-        (0, 0)
+        (-1, -1)
     }
 }

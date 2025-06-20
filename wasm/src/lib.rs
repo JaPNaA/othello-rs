@@ -25,8 +25,24 @@ impl JsInterface {
         }
     }
 
+    pub fn create_new_center_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::center_bot::Bot::new()));
+    }
+
+    pub fn create_new_edge_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::edge_bot::Bot::new()));
+    }
+
+    pub fn create_new_edge_exclusive_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::edge_exclusive_bot::Bot::new()));
+    }
+
     pub fn create_new_first_valid_move_bot(&mut self) {
         self.staged_bot = Some(Box::new(bots::first_valid_bot::Bot::new()));
+    }
+
+    pub fn create_new_last_valid_move_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::last_valid_bot::Bot::new()))
     }
 
     pub fn create_new_random_bot(&mut self) {
