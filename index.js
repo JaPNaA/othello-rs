@@ -79,10 +79,10 @@ function initBoard() {
  * @param {JsInterface} jsInterface 
  */
 function runGame(jsInterface) {
-    // jsInterface.create_new_edge_exclusive_bot();
-    // jsInterface.set_bot_as_black();
+    jsInterface.create_new_random_bot();
+    jsInterface.set_bot_as_black();
 
-    jsInterface.create_new_edge_exclusive_bot();
+    jsInterface.create_shallow_score_bot();
     jsInterface.set_bot_as_white();
 
     jsInterface.create_game();

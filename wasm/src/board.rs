@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Board {
     pub filled: u64,
     pub color: u64,

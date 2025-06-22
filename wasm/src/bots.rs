@@ -6,6 +6,7 @@ pub mod edge_exclusive_bot;
 pub mod first_valid_bot;
 pub mod last_valid_bot;
 pub mod random_bot;
+pub mod shallow_score_bot;
 
 pub struct BotRunner {
     pub board: Board,

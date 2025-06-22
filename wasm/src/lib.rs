@@ -49,6 +49,10 @@ impl JsInterface {
         self.staged_bot = Some(Box::new(bots::random_bot::Bot::new()))
     }
 
+    pub fn create_shallow_score_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::shallow_score_bot::Bot::new()))
+    }
+
     pub fn set_bot_as_white(&mut self) {
         self.white_bot = self.staged_bot.take();
     }
