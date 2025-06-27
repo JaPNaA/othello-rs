@@ -36,6 +36,8 @@ impl Board {
         }
     }
 
+    /// This method is used for testing only
+    #[allow(dead_code)]
     pub fn clear(&mut self, x: i8, y: i8) {
         let bit = 1u64 << (y * 8 + x);
         self.filled &= !bit;

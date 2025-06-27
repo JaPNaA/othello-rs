@@ -1,10 +1,12 @@
 use crate::board::Board;
 
 pub mod center_bot;
+pub mod deep_minmax_bot;
 pub mod edge_bot;
 pub mod edge_exclusive_bot;
 pub mod first_valid_bot;
 pub mod last_valid_bot;
+pub mod minmax_score_bot;
 pub mod random_bot;
 pub mod shallow_score_bot;
 
@@ -33,19 +35,25 @@ impl BotRunner {
         };
 
         loop {
+            let mut moved = false;
+
             let black_move = black_bot.make_move(&self.board, false);
-            if black_move.0 < 0
-                || black_move.1 < 0
-                || !self.board.try_place_chip(black_move.0, black_move.1, false)
+            if black_move.0 >= 0
+                && black_move.1 >= 0
+                && self.board.try_place_chip(black_move.0, black_move.1, false)
             {
-                break;
+                moved = true;
             }
 
             let white_move = white_bot.make_move(&self.board, true);
-            if white_move.0 < 0
-                || white_move.1 < 0
-                || !self.board.try_place_chip(white_move.0, white_move.1, true)
+            if white_move.0 >= 0
+                && white_move.1 >= 0
+                && self.board.try_place_chip(white_move.0, white_move.1, true)
             {
+                moved = true;
+            }
+
+            if !moved {
                 break;
             }
         }

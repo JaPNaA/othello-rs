@@ -82,12 +82,13 @@ function runGame(jsInterface) {
     jsInterface.create_new_random_bot();
     jsInterface.set_bot_as_black();
 
-    jsInterface.create_shallow_score_bot();
+    jsInterface.create_deep_minmax_bot();
     jsInterface.set_bot_as_white();
 
     jsInterface.create_game();
 
     jsInterface.bot_run_to_end();
+    console.log(jsInterface.bot_run_to_end_times(10));
 
     renderBoard(jsInterface);
 }

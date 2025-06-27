@@ -1,9 +1,13 @@
 mod board;
 mod bots;
+mod js_console;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::bots::{BotRunner, MakeMove};
+use crate::{
+    board::Board,
+    bots::{BotRunner, MakeMove},
+};
 
 #[wasm_bindgen]
 struct JsInterface {
@@ -29,6 +33,10 @@ impl JsInterface {
         self.staged_bot = Some(Box::new(bots::center_bot::Bot::new()));
     }
 
+    pub fn create_deep_minmax_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::deep_minmax_bot::Bot::new()));
+    }
+
     pub fn create_new_edge_bot(&mut self) {
         self.staged_bot = Some(Box::new(bots::edge_bot::Bot::new()));
     }
@@ -43,6 +51,10 @@ impl JsInterface {
 
     pub fn create_new_last_valid_move_bot(&mut self) {
         self.staged_bot = Some(Box::new(bots::last_valid_bot::Bot::new()))
+    }
+
+    pub fn create_new_minmax_score_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::minmax_score_bot::Bot::new()));
     }
 
     pub fn create_new_random_bot(&mut self) {
@@ -95,6 +107,30 @@ impl JsInterface {
     pub fn bot_run_to_end(&mut self) {
         let runner = self.get_runner_mut();
         runner.run_game_to_end();
+    }
+
+    pub fn bot_run_to_end_times(&mut self, times: u32) -> Vec<u32> {
+        let runner = self.get_runner_mut();
+
+        let mut white_wins = 0;
+        let mut black_wins = 0;
+
+        for _ in 0..times {
+            runner.board = Board::new();
+            runner.run_game_to_end();
+
+            // note: this is inaccurate -- run game to end should check if the bot forfeited.
+            // if a bot forfeits with more score, then we shouldn't count it a win for the bot.
+            let whites = runner.board.count_pieces(true);
+            let blacks = runner.board.count_pieces(false);
+            if whites > blacks {
+                white_wins += 1;
+            } else if whites < blacks {
+                black_wins += 1;
+            }
+        }
+
+        vec![black_wins, white_wins]
     }
 
     pub fn bot_run_white(&mut self) -> bool {
