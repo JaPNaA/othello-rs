@@ -1,3 +1,5 @@
+use std::fmt::Debug;
+
 #[derive(Clone)]
 pub struct Board {
     pub filled: u64,
@@ -32,6 +34,11 @@ impl Board {
         } else {
             self.color &= !bit;
         }
+    }
+
+    pub fn clear(&mut self, x: i8, y: i8) {
+        let bit = 1u64 << (y * 8 + x);
+        self.filled &= !bit;
     }
 
     /// Tries to place a chip and calculate results of action.
@@ -192,13 +199,54 @@ impl Board {
     }
 }
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
+impl Debug for Board {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut res = String::from("Board:\n");
+        for y in 0..8 {
+            res.push('[');
+            res.push(' ');
 
-//     #[test]
-//     fn it_works() {
-//         let result = add(2, 2);
-//         assert_eq!(result, 4);
-//     }
-// }
+            for x in 0..8 {
+                res.push(if self.is_occupied(x, y) {
+                    if self.get_color(x, y) { 'O' } else { 'X' }
+                } else {
+                    '_'
+                });
+                res.push(' ');
+            }
+
+            res.push(']');
+            res.push('\n');
+        }
+
+        f.write_str(&res)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn set_and_clear() {
+        let mut board = Board::new();
+
+        for x in 0..8 {
+            for y in 0..8 {
+                board.clear(x, y);
+                assert!(!board.is_occupied(x, y));
+
+                board.set(x, y, true);
+                assert!(board.is_occupied(x, y));
+                assert!(board.get_color(x, y));
+
+                board.set(x, y, false);
+                assert!(board.is_occupied(x, y));
+                assert!(!board.get_color(x, y));
+
+                board.clear(x, y);
+                assert!(!board.is_occupied(x, y));
+            }
+        }
+    }
+}
