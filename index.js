@@ -8,10 +8,12 @@ const game = document.getElementById("game");
 const rerunButton = document.getElementById("rerunButton");
 
 
-/** @type {HTMLButtonElement} */ // @ts-ignore
+/** @type {HTMLSelectElement} */ // @ts-ignore
 const blackBotSelect = document.getElementById("blackBotSelect");
-/** @type {HTMLButtonElement} */ // @ts-ignore
+/** @type {HTMLSelectElement} */ // @ts-ignore
 const whiteBotSelect = document.getElementById("whiteBotSelect");
+/** @type {HTMLInputElement} */ // @ts-ignore
+const numRoundsInput = document.getElementById("numRounds")
 
 /** @type {Elm[][]} */
 const boardCellContents = [];
@@ -30,6 +32,7 @@ const bots = new Map([
     ["Human", (jsi) => { }],
     ["Center Bot", (jsi) => jsi.create_new_center_bot()],
     ["Deep Minmax Bot", (jsi) => jsi.create_deep_minmax_bot()],
+    ["Deep Minmax Bot without Alpha-Beta pruning (debug)", (jsi) => jsi.create_deep_minmax_pre_alpha_beta_bot()],
     ["Edge Bot", (jsi) => jsi.create_new_edge_bot()],
     ["Edge Exclusive Bot", (jsi) => jsi.create_new_edge_exclusive_bot()],
     ["Top Left Bot", (jsi) => jsi.create_new_first_valid_move_bot()],
@@ -115,8 +118,8 @@ function runGame(jsInterface) {
 
     jsInterface.create_game();
 
-    jsInterface.bot_run_to_end();
-    // console.log(jsInterface.bot_run_to_end_times(100));
+    const numRounds = parseInt(numRoundsInput.value);
+    console.log(jsInterface.bot_run_to_end_times(numRounds > 0 ? numRounds : 1));
 
     renderBoard(jsInterface);
 }
