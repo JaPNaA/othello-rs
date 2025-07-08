@@ -7,6 +7,12 @@ const game = document.getElementById("game");
 /** @type {HTMLButtonElement} */ // @ts-ignore
 const rerunButton = document.getElementById("rerunButton");
 
+
+/** @type {HTMLButtonElement} */ // @ts-ignore
+const blackBotSelect = document.getElementById("blackBotSelect");
+/** @type {HTMLButtonElement} */ // @ts-ignore
+const whiteBotSelect = document.getElementById("whiteBotSelect");
+
 /** @type {Elm[][]} */
 const boardCellContents = [];
 
@@ -19,6 +25,21 @@ const whiteScore = new Elm("span").class("score");
 const blackScore = new Elm("span").class("score");
 const gameOverDisplay = new Elm("div");
 
+/** @type {Map<string, (jsi: JsInterface) => void} */
+const bots = new Map([
+    ["Human", (jsi) => { }],
+    ["Center Bot", (jsi) => jsi.create_new_center_bot()],
+    ["Deep Minmax Bot", (jsi) => jsi.create_deep_minmax_bot()],
+    ["Edge Bot", (jsi) => jsi.create_new_edge_bot()],
+    ["Edge Exclusive Bot", (jsi) => jsi.create_new_edge_exclusive_bot()],
+    ["Top Left Bot", (jsi) => jsi.create_new_first_valid_move_bot()],
+    ["Bottom Right Bot", (jsi) => jsi.create_new_last_valid_move_bot()],
+    ["Minmax Score Bot", (jsi) => jsi.create_new_minmax_score_bot()],
+    ["Random Bot", (jsi) => jsi.create_new_random_bot()],
+    ["Shallow Score Bot", (jsi) => jsi.create_shallow_score_bot()],
+]);
+
+initBotSelector();
 initBoard();
 
 init().then(() => {
@@ -41,6 +62,13 @@ init().then(() => {
         renderBoard(jsInterface);
     });
 });
+
+function initBotSelector() {
+    for (const bot of bots.keys()) {
+        new Elm("option").append(bot).attribute("value", bot).appendTo(whiteBotSelect);
+        new Elm("option").append(bot).attribute("value", bot).appendTo(blackBotSelect);
+    }
+}
 
 function initBoard() {
     while (game.lastChild) {
@@ -79,16 +107,16 @@ function initBoard() {
  * @param {JsInterface} jsInterface 
  */
 function runGame(jsInterface) {
-    jsInterface.create_new_random_bot();
+    bots.get(blackBotSelect.value)?.(jsInterface);
     jsInterface.set_bot_as_black();
 
-    jsInterface.create_deep_minmax_bot();
+    bots.get(whiteBotSelect.value)?.(jsInterface);
     jsInterface.set_bot_as_white();
 
     jsInterface.create_game();
 
     jsInterface.bot_run_to_end();
-    console.log(jsInterface.bot_run_to_end_times(10));
+    // console.log(jsInterface.bot_run_to_end_times(100));
 
     renderBoard(jsInterface);
 }
