@@ -10,125 +10,57 @@ impl Bot {
     }
 }
 
-const NEG_INF_SCORE: u16 = 0;
-const POS_INF_SCORE: u16 = 64;
-
 impl MakeMove for Bot {
     fn make_move(&mut self, board: &Board, color: bool) -> (i8, i8) {
-        let moves = board.get_all_valid_moves(color).into_iter();
+        let moves = board.get_all_valid_moves(color);
 
-        let moves = moves;
+        // js_console::log("Making a move...");
 
-        let mut best_score = 0;
-        let mut best_move = (-1, -1);
-
-        for m in moves {
+        match moves.into_iter().max_by_key(|m| {
             let mut future = board.clone();
             future.try_place_chip(m.0, m.1, color);
-            let result = evaluate_board(&future, color, !color, 4, NEG_INF_SCORE, POS_INF_SCORE);
+            let val = evaluate_board(&future, color, !color, 4);
             // let val = heuristic_score(&future, color);
-
-            if result > best_score {
-                best_move = m;
-                best_score = result;
-            }
+            // js_console::log(&format!("Score: {} for move {}, {}", val, m.0, m.1));
+            val
+        }) {
+            Some(x) => x,
+            None => (-1, -1),
         }
-
-        // js_console::log(&format!(
-        //     "Score: {} for move {} {}",
-        //     best_score, best_move.0, best_move.1
-        // ));
-
-        best_move
     }
 }
 
-fn evaluate_board(
-    board: &Board,
-    color: bool,
-    next_turn_color: bool,
-    depth: u16,
-    alpha: u16,
-    beta: u16,
-) -> u16 {
+fn evaluate_board(board: &Board, color: bool, next_turn_color: bool, depth: u16) -> u16 {
     if depth == 0 {
         return heuristic_score(board, color);
     }
 
-    let next_moves = board.get_all_valid_moves(next_turn_color);
-
-    if next_moves.is_empty() {
-        return evaluate_board(&board, color, !next_turn_color, depth - 1, alpha, beta);
-    }
-
-    let next_moves = next_moves.into_iter();
+    let next_moves = board
+        .get_all_valid_moves(next_turn_color)
+        .into_iter()
+        .map(|m| {
+            let mut future_board = board.clone();
+            future_board.try_place_chip(m.0, m.1, next_turn_color);
+            evaluate_board(&future_board, color, !next_turn_color, depth - 1)
+        });
 
     if next_turn_color == color {
         // our move, find max
-        let mut max = alpha;
-
-        for m in next_moves {
-            let mut future_board = board.clone();
-            future_board.try_place_chip(m.0, m.1, next_turn_color);
-            // this branch is (result or worse)
-            let result =
-                evaluate_board(&future_board, color, !next_turn_color, depth - 1, max, beta);
-            // alphabeta = result.1;
-
-            if result >= max {
-                max = result;
-
-                if max >= beta {
-                    // opponent has better options than this branch, stop search
-                    return max;
-                }
-            }
-        }
-
-        max
+        next_moves.max()
     } else {
         // their move, find min
-        let mut min = beta;
-
-        for m in next_moves {
-            let mut future_board = board.clone();
-            future_board.try_place_chip(m.0, m.1, next_turn_color);
-            // this branch is (result or worse)
-            let result = evaluate_board(
-                &future_board,
-                color,
-                !next_turn_color,
-                depth - 1,
-                alpha,
-                min,
-            );
-
-            if result < min {
-                min = result;
-
-                if min <= alpha {
-                    // we have better options than this branch, stop search
-                    return min;
-                }
-            }
-        }
-
-        min
+        next_moves.min()
     }
+    .unwrap_or_else(|| evaluate_board(&board, color, !next_turn_color, depth - 1))
 }
 
 fn heuristic_score(board: &Board, color: bool) -> u16 {
-    let score = board.count_pieces(color);
-    eprintln!("{}: {:?}", score, board);
-    score
+    board.count_pieces(color)
 }
 
 #[cfg(test)]
 mod test {
-    use crate::{
-        board::Board,
-        bots::deep_minmax_bot::{NEG_INF_SCORE, POS_INF_SCORE, evaluate_board},
-    };
+    use crate::{board::Board, bots::deep_minmax_bot_pre_alpha_beta::evaluate_board};
 
     macro_rules! create_board_piece {
         (X) => {
@@ -199,11 +131,11 @@ mod test {
             [_ _ _ _ _ _ _ _],
         );
 
-        assert_eq!(eval_board(&board, true, false, 0), 3);
+        assert_eq!(evaluate_board(&board, true, false, 0), 3);
     }
 
     #[test]
-    pub fn eval_board_choices() {
+    pub fn evaluate_board_choices() {
         let board = create_board!(
             [_ _ _ _ _ _ _ _],
             [_ _ _ _ _ _ _ _],
@@ -216,27 +148,27 @@ mod test {
         );
 
         // at depth 0, we only see that we have two pieces on the board
-        assert_eq!(eval_board(&board, false, false, 0), 2);
+        assert_eq!(evaluate_board(&board, false, false, 0), 2);
 
         // at depth 1, we see that we can place X on (6, 7) to get 6 points
-        assert_eq!(eval_board(&board, false, false, 1), 6);
+        assert_eq!(evaluate_board(&board, false, false, 1), 6);
 
         // At depth 2, we see that our best move is to place on (4, 3) to get 4 points
         // The move at depth 1 is considered bad since O can take back immediately
-        assert_eq!(eval_board(&board, false, false, 2), 4);
+        assert_eq!(evaluate_board(&board, false, false, 2), 4);
 
         // At depth 3, we see the sequence:
         //   - X (4, 3)
         //   - O skip
         //   - X (7, 6)
-        assert_eq!(eval_board(&board, false, false, 3), 8);
+        assert_eq!(evaluate_board(&board, false, false, 3), 8);
 
         // At depth 4, we see the sequence:
         //   - X (1, 6)
         //   - O (1, 3)
         //   - X (7, 6)
         //   - O skip
-        assert_eq!(eval_board(&board, false, false, 4), 7);
+        assert_eq!(evaluate_board(&board, false, false, 4), 7);
 
         // At depth 5, we see the best sequence:
         //   - X (3, 4)
@@ -244,14 +176,11 @@ mod test {
         //   - X (1, 6)
         //   - O skip
         //   - X (7, 6)
-        assert_eq!(eval_board(&board, false, false, 5), 10);
+        assert_eq!(evaluate_board(&board, false, false, 5), 10);
     }
 
     #[test]
     pub fn evaluate_board_game_opening_depth_4() {
-        // these evaluations were the results of minmax before
-        // implementing alpha-beta pruning
-
         // these evaluations were the results of minmax before
         // implementing alpha-beta pruning
 
@@ -266,7 +195,7 @@ mod test {
             [_ _ _ _ _ _ _ _],
         );
 
-        assert_eq!(eval_board(&board, true, false, 4), 6);
+        assert_eq!(evaluate_board(&board, true, false, 4), 6);
 
         let board = create_board!(
             [_ _ _ _ _ _ _ _],
@@ -279,7 +208,7 @@ mod test {
             [_ _ _ _ _ _ _ _],
         );
 
-        assert_eq!(eval_board(&board, true, false, 4), 8);
+        assert_eq!(evaluate_board(&board, true, false, 4), 8);
 
         let board = create_board!(
             [_ _ _ _ _ _ _ _],
@@ -292,17 +221,6 @@ mod test {
             [_ _ _ _ _ _ _ _],
         );
 
-        assert_eq!(eval_board(&board, true, false, 4), 9);
-    }
-
-    fn eval_board(board: &Board, color: bool, next_turn_color: bool, depth: u16) -> u16 {
-        evaluate_board(
-            board,
-            color,
-            next_turn_color,
-            depth,
-            NEG_INF_SCORE,
-            POS_INF_SCORE,
-        )
+        assert_eq!(evaluate_board(&board, true, false, 4), 9);
     }
 }

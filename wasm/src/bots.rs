@@ -2,6 +2,7 @@ use crate::board::Board;
 
 pub mod center_bot;
 pub mod deep_minmax_bot;
+pub mod deep_minmax_bot_pre_alpha_beta;
 pub mod edge_bot;
 pub mod edge_exclusive_bot;
 pub mod first_valid_bot;
