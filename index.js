@@ -27,12 +27,11 @@ const whiteScore = new Elm("span").class("score");
 const blackScore = new Elm("span").class("score");
 const gameOverDisplay = new Elm("div");
 
-/** @type {Map<string, (jsi: JsInterface) => void} */
+/** @type {Map<string, (jsi: JsInterface) => void>} */
 const bots = new Map([
-    ["Human", (jsi) => { }],
+    ["Human", (_) => { }],
     ["Center Bot", (jsi) => jsi.create_new_center_bot()],
     ["Deep Minmax Bot", (jsi) => jsi.create_deep_minmax_bot()],
-    ["Deep Minmax Bot without Alpha-Beta pruning (debug)", (jsi) => jsi.create_deep_minmax_pre_alpha_beta_bot()],
     ["Edge Bot", (jsi) => jsi.create_new_edge_bot()],
     ["Edge Exclusive Bot", (jsi) => jsi.create_new_edge_exclusive_bot()],
     ["Top Left Bot", (jsi) => jsi.create_new_first_valid_move_bot()],

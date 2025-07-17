@@ -37,10 +37,6 @@ impl JsInterface {
         self.staged_bot = Some(Box::new(bots::deep_minmax_bot::Bot::new()));
     }
 
-    pub fn create_deep_minmax_pre_alpha_beta_bot(&mut self) {
-        self.staged_bot = Some(Box::new(bots::deep_minmax_bot_pre_alpha_beta::Bot::new()));
-    }
-
     pub fn create_new_edge_bot(&mut self) {
         self.staged_bot = Some(Box::new(bots::edge_bot::Bot::new()));
     }
