@@ -60,6 +60,16 @@ body {
     grid-area: side;
 }
 
+#side .player {
+    width: 256px;
+    border: 1px solid currentColor;
+}
+
+#side .player.black {
+    background-color: #000;
+    color: #fff;
+}
+
 .gameCell {
     background-color: #a5b4a5;
     width: 48px;

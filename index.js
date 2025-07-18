@@ -42,6 +42,13 @@ const bots = new Map([
     ["Deep Heuristic Bot", (jsi) => jsi.create_deep_heuristic_bot()],
 ]);
 
+const gameState = {
+    whiteIsHuman: true,
+    blackIsHuman: true,
+    gameStarted: false,
+    turn: false
+};
+
 initBotSelector();
 initBoard();
 
@@ -54,14 +61,7 @@ init().then(() => {
     });
 
     clickListeners.push((x, y) => {
-        if (jsInterface.board_try_place(x, y, false)) {
-            // currTurn = !currTurn;
-            setTimeout(() => {
-                jsInterface.bot_run_white();
-                renderBoard(jsInterface);
-            }, 300);
-        }
-
+        humanInput(jsInterface, x, y);
         renderBoard(jsInterface);
     });
 });
@@ -107,13 +107,57 @@ function initBoard() {
 }
 
 /**
+ * @param {JsInterface} jsi
+ * @param {number} x
+ * @param {number} y
+ */
+function humanInput(jsi, x, y) {
+    if (!gameState.gameStarted) { return; }
+    if (!(
+        gameState.turn === true && gameState.whiteIsHuman ||
+        gameState.turn === false && gameState.blackIsHuman
+    )) {
+        return;
+    }
+
+    if (jsi.board_try_place(x, y, gameState.turn)) {
+        gameState.turn = !gameState.turn;
+
+        if (
+            gameState.turn === true && !gameState.whiteIsHuman ||
+            gameState.turn === false && !gameState.blackIsHuman
+        ) {
+            setTimeout(() => {
+                runBotMove(jsi);
+            }, 300);
+        }
+    }
+}
+
+/** @param {JsInterface} jsi */
+function runBotMove(jsi) {
+    if (gameState.turn === true && !gameState.whiteIsHuman) {
+        jsi.bot_run_white();
+        gameState.turn = false;
+        renderBoard(jsi);
+    } else if (gameState.turn === false && !gameState.blackIsHuman) {
+        jsi.bot_run_black();
+        gameState.turn = true;
+        renderBoard(jsi);
+    }
+}
+
+/**
  * @param {JsInterface} jsInterface 
  */
 function runGame(jsInterface) {
+    resetGameState();
     bots.get(blackBotSelect.value)?.(jsInterface);
+    gameState.blackIsHuman = blackBotSelect.value === "Human";
     jsInterface.set_bot_as_black();
 
     bots.get(whiteBotSelect.value)?.(jsInterface);
+    gameState.whiteIsHuman = whiteBotSelect.value === "Human";
     jsInterface.set_bot_as_white();
 
     jsInterface.create_game();
@@ -122,6 +166,17 @@ function runGame(jsInterface) {
     console.log(jsInterface.bot_run_to_end_times(numRounds > 0 ? numRounds : 1));
 
     renderBoard(jsInterface);
+    gameState.gameStarted = true;
+
+    // in case bot is first, run bot move
+    runBotMove(jsInterface);
+}
+
+function resetGameState() {
+    gameState.turn = false;
+    gameState.gameStarted = false;
+    gameState.blackIsHuman = true;
+    gameState.whiteIsHuman = true;
 }
 
 /**
