@@ -138,14 +138,16 @@ impl JsInterface {
         vec![black_wins, white_wins]
     }
 
-    pub fn bot_run_white(&mut self) -> bool {
+    pub fn bot_run_white(&mut self) -> Option<Vec<i8>> {
         let runner = self.get_runner_mut();
-        runner.run_white_bot()
+        let m = runner.run_white_bot()?;
+        Some(vec![m.0, m.1])
     }
 
-    pub fn bot_run_black(&mut self) -> bool {
+    pub fn bot_run_black(&mut self) -> Option<Vec<i8>> {
         let runner = self.get_runner_mut();
-        runner.run_black_bot()
+        let m = runner.run_black_bot()?;
+        Some(vec![m.0, m.1])
     }
 
     fn get_runner(&self) -> &BotRunner {

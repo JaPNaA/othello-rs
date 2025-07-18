@@ -13,8 +13,8 @@ body {
 @media only screen and (min-width: 640px) {
     body {
         grid-template:
-            "title title" auto
-            "game side" auto / max-content auto;
+            "title title title" auto
+            "game side _" auto / max-content min-content auto;
     }
 }
 
@@ -58,6 +58,8 @@ body {
 
 #side {
     grid-area: side;
+    display: flex;
+    flex-direction: column;
 }
 
 #side .player {
@@ -68,6 +70,27 @@ body {
 #side .player.black {
     background-color: #000;
     color: #fff;
+}
+
+#history {
+    flex-grow: 1;
+    flex-basis: 4em;
+
+    overflow-y: scroll;
+
+    border: 1px solid black;
+    padding: 0px;
+    margin: 4px 0;
+
+    list-style-type: none;
+}
+
+#history .item {
+    padding: 8px;
+}
+
+#history .item.black {
+    background-color: #d6d6d6;
 }
 
 .gameCell {

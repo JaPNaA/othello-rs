@@ -3,6 +3,8 @@ import { Elm } from "./elements.js";
 
 /** @type {HTMLDivElement} */ // @ts-ignore
 const game = document.getElementById("game");
+/** @type {Elm} */ // @ts-ignore
+const history = new Elm(document.getElementById("history"));
 
 /** @type {HTMLButtonElement} */ // @ts-ignore
 const rerunButton = document.getElementById("rerunButton");
@@ -13,7 +15,7 @@ const blackBotSelect = document.getElementById("blackBotSelect");
 /** @type {HTMLSelectElement} */ // @ts-ignore
 const whiteBotSelect = document.getElementById("whiteBotSelect");
 /** @type {HTMLInputElement} */ // @ts-ignore
-const numRoundsInput = document.getElementById("numRounds")
+const numRoundsInput = document.getElementById("numRounds");
 
 /** @type {Elm[][]} */
 const boardCellContents = [];
@@ -45,7 +47,7 @@ const bots = new Map([
 const gameState = {
     whiteIsHuman: true,
     blackIsHuman: true,
-    gameStarted: false,
+    gameActive: false,
     turn: false
 };
 
@@ -112,7 +114,7 @@ function initBoard() {
  * @param {number} y
  */
 function humanInput(jsi, x, y) {
-    if (!gameState.gameStarted) { return; }
+    if (!gameState.gameActive) { return; }
     if (!(
         gameState.turn === true && gameState.whiteIsHuman ||
         gameState.turn === false && gameState.blackIsHuman
@@ -121,30 +123,100 @@ function humanInput(jsi, x, y) {
     }
 
     if (jsi.board_try_place(x, y, gameState.turn)) {
+        addHistory(gameState.turn, x, y);
+        checkGameState(jsi);
         gameState.turn = !gameState.turn;
 
-        if (
-            gameState.turn === true && !gameState.whiteIsHuman ||
-            gameState.turn === false && !gameState.blackIsHuman
-        ) {
-            setTimeout(() => {
-                runBotMove(jsi);
-            }, 300);
-        }
+        scheduleBotMoveIfShould(jsi);
     }
 }
 
 /** @param {JsInterface} jsi */
 function runBotMove(jsi) {
+    let moved = false;
+    let move;
     if (gameState.turn === true && !gameState.whiteIsHuman) {
-        jsi.bot_run_white();
-        gameState.turn = false;
-        renderBoard(jsi);
+        move = jsi.bot_run_white();
+        moved = true;
     } else if (gameState.turn === false && !gameState.blackIsHuman) {
-        jsi.bot_run_black();
-        gameState.turn = true;
-        renderBoard(jsi);
+        move = jsi.bot_run_black();
+        moved = true;
     }
+
+    if (!moved) { return; }
+
+    if (move) {
+        addHistory(gameState.turn, move[0], move[1]);
+        renderBoard(jsi);
+    } else {
+        addHistorySkipped(gameState.turn);
+    }
+    gameState.turn = !gameState.turn;
+
+
+    checkGameState(jsi);
+    scheduleBotMoveIfShould(jsi);
+}
+
+/**
+ * Checks the state of the game for skips or game ends.
+ * @param {JsInterface} jsi
+ */
+function scheduleBotMoveIfShould(jsi) {
+    if (!gameState.gameActive) { return; }
+    if (
+        gameState.turn === true && !gameState.whiteIsHuman ||
+        gameState.turn === false && !gameState.blackIsHuman
+    ) {
+        setTimeout(() => {
+            runBotMove(jsi);
+        }, 300);
+    }
+}
+
+/**
+ * Checks the state of the game for skips or game ends.
+ * @param {JsInterface} jsi
+ */
+function checkGameState(jsi) {
+    if (!jsi.board_has_valid_move(gameState.turn)) {
+        addHistorySkipped(gameState.turn);
+        gameState.turn = !gameState.turn;
+
+        if (!jsi.board_has_valid_move(gameState.turn)) {
+            // game end
+            gameState.gameActive = false;
+            return;
+        }
+    }
+}
+
+const letters = "abcdefgh";
+
+/**
+ * @param {boolean} color 
+ * @param {number} x 
+ * @param {number} y 
+ */
+function addHistory(color, x, y) {
+    _addHistory(color, `${letters[x]}${8 - y}`);
+}
+
+/** @param {boolean} color */
+function addHistorySkipped(color) {
+    _addHistory(color, `Skip`);
+}
+
+/**
+ * @param {boolean} color 
+ * @param {string} text 
+ */
+function _addHistory(color, text) {
+    const elm = new Elm("li").class("item");
+    if (color) { elm.class("white"); } else { elm.class("black"); }
+    elm.append(`${color ? "W" : "B"}: `, text);
+    elm.appendTo(history);
+    history.elm.scrollTop = history.elm.scrollHeight;
 }
 
 /**
@@ -162,11 +234,11 @@ function runGame(jsInterface) {
 
     jsInterface.create_game();
 
-    const numRounds = parseInt(numRoundsInput.value);
-    console.log(jsInterface.bot_run_to_end_times(numRounds > 0 ? numRounds : 1));
+    // const numRounds = parseInt(numRoundsInput.value);
+    // console.log(jsInterface.bot_run_to_end_times(numRounds > 0 ? numRounds : 1));
 
     renderBoard(jsInterface);
-    gameState.gameStarted = true;
+    gameState.gameActive = true;
 
     // in case bot is first, run bot move
     runBotMove(jsInterface);
@@ -174,9 +246,10 @@ function runGame(jsInterface) {
 
 function resetGameState() {
     gameState.turn = false;
-    gameState.gameStarted = false;
+    gameState.gameActive = false;
     gameState.blackIsHuman = true;
     gameState.whiteIsHuman = true;
+    history.clear();
 }
 
 /**

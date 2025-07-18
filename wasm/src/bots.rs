@@ -61,29 +61,35 @@ impl BotRunner {
     }
 
     /// Runs the black bot's move once. Returns true if move was successful.
-    /// If the move was unsuccessful, assume the opponent's victory.
-    pub fn run_black_bot(&mut self) -> bool {
+    /// If the move was unsuccessful, assume there are no valid moves and skip.
+    pub fn run_black_bot(&mut self) -> Option<(i8, i8)> {
         if let Some(black_bot) = &mut self.black_bot {
             let black_move = black_bot.make_move(&self.board, false);
-            return black_move.0 >= 0
+            if black_move.0 >= 0
                 && black_move.1 >= 0
-                && self.board.try_place_chip(black_move.0, black_move.1, false);
-        } else {
-            false
+                && self.board.try_place_chip(black_move.0, black_move.1, false)
+            {
+                return Some(black_move);
+            }
         }
+
+        None
     }
 
     /// Runs the white bot's move once. Returns true if move was successful.
-    /// If the move was unsuccessful, assume the opponent's victory.
-    pub fn run_white_bot(&mut self) -> bool {
+    /// If the move was unsuccessful, assume there are no valid moves and skip.
+    pub fn run_white_bot(&mut self) -> Option<(i8, i8)> {
         if let Some(white_bot) = &mut self.white_bot {
             let white_move = white_bot.make_move(&self.board, true);
-            return white_move.0 >= 0
+            if white_move.0 >= 0
                 && white_move.1 >= 0
-                && self.board.try_place_chip(white_move.0, white_move.1, true);
-        } else {
-            false
+                && self.board.try_place_chip(white_move.0, white_move.1, true)
+            {
+                return Some(white_move);
+            }
         }
+
+        None
     }
 }
 
