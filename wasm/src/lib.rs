@@ -1,6 +1,7 @@
 mod board;
 mod bots;
 mod js_console;
+mod macros;
 
 use wasm_bindgen::prelude::wasm_bindgen;
 
@@ -33,8 +34,12 @@ impl JsInterface {
         self.staged_bot = Some(Box::new(bots::center_bot::Bot::new()));
     }
 
-    pub fn create_deep_minmax_bot(&mut self) {
-        self.staged_bot = Some(Box::new(bots::deep_minmax_bot::Bot::new()));
+    pub fn create_deep_heuristic_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::deep_heuristic_bot::Bot::new()));
+    }
+
+    pub fn create_deep_score_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::deep_score_bot::Bot::new()));
     }
 
     pub fn create_new_edge_bot(&mut self) {

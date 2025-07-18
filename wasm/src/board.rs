@@ -188,11 +188,11 @@ impl Board {
         count
     }
 
-    fn is_occupied(&self, x: i8, y: i8) -> bool {
+    pub fn is_occupied(&self, x: i8, y: i8) -> bool {
         return ((self.filled >> (y * 8 + x)) & 1) != 0;
     }
 
-    fn get_color(&self, x: i8, y: i8) -> bool {
+    pub fn get_color(&self, x: i8, y: i8) -> bool {
         return ((self.color >> (y * 8 + x)) & 1) != 0;
     }
 

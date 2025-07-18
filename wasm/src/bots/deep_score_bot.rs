@@ -1,7 +1,6 @@
 use crate::{board::Board, bots::MakeMove};
 
 /// This bot maximizes score by doing a 5-deep minmax search
-/// note: currently doesn't seem to work(?)
 pub struct Bot {}
 
 impl Bot {
@@ -33,11 +32,6 @@ impl MakeMove for Bot {
                 best_score = result;
             }
         }
-
-        // js_console::log(&format!(
-        //     "Score: {} for move {} {}",
-        //     best_score, best_move.0, best_move.1
-        // ));
 
         best_move
     }
@@ -119,7 +113,6 @@ fn evaluate_board(
 
 fn heuristic_score(board: &Board, color: bool) -> u16 {
     let score = board.count_pieces(color);
-    eprintln!("{}: {:?}", score, board);
     score
 }
 
@@ -127,64 +120,9 @@ fn heuristic_score(board: &Board, color: bool) -> u16 {
 mod test {
     use crate::{
         board::Board,
-        bots::deep_minmax_bot::{NEG_INF_SCORE, POS_INF_SCORE, evaluate_board},
+        bots::deep_score_bot::{NEG_INF_SCORE, POS_INF_SCORE, evaluate_board},
+        create_board,
     };
-
-    macro_rules! create_board_piece {
-        (X) => {
-            1
-        };
-        (O) => {
-            2
-        };
-        (_) => {
-            3
-        };
-    }
-
-    macro_rules! create_board_row {
-        ([$a:tt $b:tt $c:tt $d:tt $e:tt $f:tt $g:tt $h:tt]) => {
-            [
-                create_board_piece!($a),
-                create_board_piece!($b),
-                create_board_piece!($c),
-                create_board_piece!($d),
-                create_board_piece!($e),
-                create_board_piece!($f),
-                create_board_piece!($g),
-                create_board_piece!($h),
-            ]
-        };
-    }
-
-    macro_rules! create_board {
-        ($a:tt, $b:tt, $c:tt, $d:tt, $e:tt, $f:tt, $g:tt, $h:tt,) => {{
-            let mut board = Board::new();
-            let data = [
-                create_board_row!($a),
-                create_board_row!($b),
-                create_board_row!($c),
-                create_board_row!($d),
-                create_board_row!($e),
-                create_board_row!($f),
-                create_board_row!($g),
-                create_board_row!($h),
-            ];
-
-            for y in 0..8usize {
-                for x in 0..8usize {
-                    match data[y][x] {
-                        1 => board.set(x as i8, y as i8, false),
-                        2 => board.set(x as i8, y as i8, true),
-                        3 => board.clear(x as i8, y as i8),
-                        _ => { }
-                    }
-                }
-            }
-
-            board
-        }};
-    }
 
     #[test]
     pub fn evaluate_board_starting() {
