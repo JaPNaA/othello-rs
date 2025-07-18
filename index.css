@@ -1,3 +1,65 @@
+body {
+    font-family: "Fira Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    display: grid;
+    grid-template:
+        "title"
+        "game"
+        "side";
+}
+
+@media only screen and (min-width: 640px) {
+    body {
+        grid-template:
+            "title title" auto
+            "game side" auto / max-content auto;
+    }
+}
+
+#title {
+    grid-area: title;
+    font-size: 4em;
+    margin-top: 32px;
+    margin-bottom: 16px;
+}
+
+#title .mainLine {
+    font-family: "Bitcount Grid Double", system-ui;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+        "slnt" 0,
+        "CRSV" 0.5,
+        "ELSH" 0,
+        "ELXP" 0;
+    line-height: 0.8em;
+}
+
+#title .subLine {
+    font-size: 0.25em;
+    font-family: "Alfa Slab One", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#title .rust {
+    background-color: #fd6f44;
+    color: #000;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+#game {
+    grid-area: game;
+}
+
+#side {
+    grid-area: side;
+}
+
 .gameCell {
     background-color: #a5b4a5;
     width: 48px;

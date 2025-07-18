@@ -6,13 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Othello in Rust</title>
     <link rel="stylesheet" href="index.css">
+
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bitcount+Grid+Double&family=Fira+Sans&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
-    <h1>Othello in Rust</h1>
+    <h1 id="title">
+        <div class="mainLine">Othello</div>
+        <div class="subLine">in <span class="rust">Rust</span></div>
+    </h1>
     <div id="game">JavaScript is required to run this app.</div>
 
-    <div>
+    <div id="side">
         <div>
             <label>Black <select id="blackBotSelect"></select></label>
         </div>
