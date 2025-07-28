@@ -32,6 +32,7 @@ const gameOverDisplay = new Elm("div");
 /** @type {Map<string, (jsi: JsInterface) => void>} */
 const bots = new Map([
     ["Human", (_) => { }],
+    ["Deep Negative Heuristic Bot", (jsi) => jsi.create_deep_negative_heuristic_bot()],
     ["Top Left Bot", (jsi) => jsi.create_new_first_valid_move_bot()],
     ["Bottom Right Bot", (jsi) => jsi.create_new_last_valid_move_bot()],
     ["Random Bot", (jsi) => jsi.create_new_random_bot()],

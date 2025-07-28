@@ -38,6 +38,10 @@ impl JsInterface {
         self.staged_bot = Some(Box::new(bots::deep_heuristic_bot::Bot::new()));
     }
 
+    pub fn create_deep_negative_heuristic_bot(&mut self) {
+        self.staged_bot = Some(Box::new(bots::deep_negative_heuristic_bot::Bot::new()));
+    }
+
     pub fn create_deep_score_bot(&mut self) {
         self.staged_bot = Some(Box::new(bots::deep_score_bot::Bot::new()));
     }

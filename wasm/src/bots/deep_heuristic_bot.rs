@@ -37,7 +37,7 @@ impl MakeMove for Bot {
     }
 }
 
-fn evaluate_board(
+pub fn evaluate_board(
     board: &Board,
     color: bool,
     next_turn_color: bool,
