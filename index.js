@@ -125,8 +125,8 @@ function humanInput(jsi, x, y) {
 
     if (jsi.board_try_place(x, y, gameState.turn)) {
         addHistory(gameState.turn, x, y);
-        checkGameState(jsi);
         gameState.turn = !gameState.turn;
+        checkGameState(jsi);
 
         scheduleBotMoveIfShould(jsi);
     }
@@ -289,8 +289,8 @@ function renderBoard(jsInterface) {
 
     const whites = jsInterface.board_count_pieces(true);
     const blacks = jsInterface.board_count_pieces(false);
-    whiteScore.replaceContents(whites);
-    blackScore.replaceContents(blacks);
+    whiteScore.replaceContents(whites.toString());
+    blackScore.replaceContents(blacks.toString());
 
     if (whites > blacks) {
         whiteScore.class("leading");
