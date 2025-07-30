@@ -1,13 +1,15 @@
-use rand::Rng;
+use rand::{Rng, rngs::ThreadRng};
 
 use crate::{board::Board, bots::MakeMove};
 
 /// This bot choses a random move
-pub struct Bot {}
+pub struct Bot {
+    rng: ThreadRng,
+}
 
 impl Bot {
     pub fn new() -> Bot {
-        Bot {}
+        Bot { rng: rand::rng() }
     }
 }
 
@@ -19,6 +21,6 @@ impl MakeMove for Bot {
             return (-1, -1);
         }
 
-        valid_moves[rand::rng().random_range(0..valid_moves.len())].clone()
+        valid_moves[self.rng.random_range(0..valid_moves.len())].clone()
     }
 }

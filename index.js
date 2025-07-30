@@ -1,5 +1,6 @@
 import init, { JsInterface } from "./wasm/pkg/wasm.js";
 import { Elm } from "./elements.js";
+import { botsMap } from "./botsList.js";
 
 /** @type {HTMLDivElement} */ // @ts-ignore
 const game = document.getElementById("game");
@@ -34,18 +35,9 @@ const gameTableContainer = new Elm("div").class("gameTableContainer");
 /** @type {Map<string, (jsi: JsInterface) => void>} */
 const bots = new Map([
     ["Human", (_) => { }],
-    ["Deep Negative Heuristic Bot", (jsi) => jsi.create_deep_negative_heuristic_bot()],
-    ["Top Left Bot", (jsi) => jsi.create_new_first_valid_move_bot()],
-    ["Bottom Right Bot", (jsi) => jsi.create_new_last_valid_move_bot()],
-    ["Random Bot", (jsi) => jsi.create_new_random_bot()],
-    ["Center Bot", (jsi) => jsi.create_new_center_bot()],
-    ["Edge Bot", (jsi) => jsi.create_new_edge_bot()],
-    ["Edge Exclusive Bot", (jsi) => jsi.create_new_edge_exclusive_bot()],
-    ["Shallow Score Bot", (jsi) => jsi.create_shallow_score_bot()],
-    ["Minmax Score Bot", (jsi) => jsi.create_new_minmax_score_bot()],
-    ["Deep Score Bot", (jsi) => jsi.create_deep_score_bot()],
-    ["Deep Heuristic Bot", (jsi) => jsi.create_deep_heuristic_bot()],
 ]);
+
+for (const [name, fn] of botsMap) { bots.set(name, fn); }
 
 const gameState = {
     whiteIsHuman: true,

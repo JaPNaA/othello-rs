@@ -1,17 +1,22 @@
+use rand::{rngs::ThreadRng, seq::SliceRandom};
+
 use crate::{board::Board, bots::MakeMove};
 
 /// This bot picks the move that gives it the most score after the best opponent move
-pub struct Bot {}
+pub struct Bot {
+    rng: ThreadRng,
+}
 
 impl Bot {
     pub fn new() -> Bot {
-        Bot {}
+        Bot { rng: rand::rng() }
     }
 }
 
 impl MakeMove for Bot {
     fn make_move(&mut self, board: &Board, color: bool) -> (i8, i8) {
-        let moves = board.get_all_valid_moves(color);
+        let mut moves = board.get_all_valid_moves(color);
+        moves.shuffle(&mut self.rng);
 
         match moves
             .into_iter()

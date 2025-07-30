@@ -177,50 +177,50 @@ _ _ _ o _ _ _ _
 <p>If both players have the same number of pieces, the game ends in a tie.</p>
 <h1>Bots</h1>
 <p>This app has several bots that employ various strategies.</p>
-<p>The list is ordered roughly from best strategies to worst.</p>
+<p>The list is ordered from best strategies to worst.</p>
 <ul>
-<li>Deep Negative Heuristic Bot<ul>
+<li>Deep Negative Heuristic Bot (Elo: -334)<ul>
 <li>This bot plays the worst moves it can find</li>
 <li>This bot is the opposite of the Deep Heuristic Bot</li>
 </ul>
 </li>
-<li>Top Left Bot<ul>
-<li>This bot plays the first move it finds in reading order (highest first, then left-to-right).</li>
-</ul>
-</li>
-<li>Bottom Right Bot<ul>
-<li>Opposite of the Top Left Bot, plays the last move in reading order</li>
-</ul>
-</li>
-<li>Random Bot<ul>
-<li>Plays a valid move randomly</li>
-</ul>
-</li>
-<li>Center Bot<ul>
+<li>Center Bot (Elo: -243)<ul>
 <li>Tries to play move closest to the center of the board</li>
 </ul>
 </li>
-<li>Edge Bot<ul>
-<li>Opposite of the Center Bot, tries to play moves closest to the edge of the board</li>
+<li>Bottom Right Bot (Elo: -52)<ul>
+<li>Opposite of the Top Left Bot, plays the last move in reading order</li>
 </ul>
 </li>
-<li>Edge Exclusive Bot<ul>
-<li>Plays corners if possible. If not, plays edges if possible. If not, plays a random move.</li>
+<li>Top Left Bot (Elo: -8)<ul>
+<li>This bot plays the first move it finds in reading order (highest first, then left-to-right).</li>
 </ul>
 </li>
-<li>Shallow Score Bot<ul>
+<li>Random Bot (Elo: 0)<ul>
+<li>Plays a valid move randomly</li>
+</ul>
+</li>
+<li>Shallow Score Bot (Elo: 67)<ul>
 <li>Plays the move that maximizes the number of pieces sandwiched.</li>
 </ul>
 </li>
-<li>Minmax Score Bot<ul>
+<li>Edge Bot (Elo: 96)<ul>
+<li>Opposite of the Center Bot, tries to play moves closest to the edge of the board</li>
+</ul>
+</li>
+<li>Edge Exclusive Bot (Elo: 128)<ul>
+<li>Plays corners if possible. If not, plays edges if possible. If not, plays a random move.</li>
+</ul>
+</li>
+<li>Minmax Score Bot (Elo: 233)<ul>
 <li>Maximizes the number of pieces sandwiched, while minimizing the number of pieces that the opponent can sandwich.</li>
 </ul>
 </li>
-<li>Deep Score Bot<ul>
+<li>Deep Score Bot (Elo: 459)<ul>
 <li>Maximizes the score it can get, looking 5 moves ahead.</li>
 </ul>
 </li>
-<li>Deep Heuristic Bot<ul>
+<li>Deep Heuristic Bot (Elo: 1040)<ul>
 <li>Maximizes a heuristic, looking 5 moves ahead. The heuristic is the score with additional points for corner and edges. The extra score for corners and edges decreases as the board is filled up.</li>
 </ul>
 </li>

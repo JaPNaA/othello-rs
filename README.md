@@ -203,28 +203,28 @@ If both players have the same number of pieces, the game ends in a tie.
 
 This app has several bots that employ various strategies.
 
-The list is ordered roughly from best strategies to worst.
+The list is ordered from best strategies to worst.
 
-- Deep Negative Heuristic Bot
+- Deep Negative Heuristic Bot (Elo: -334)
   - This bot plays the worst moves it can find
   - This bot is the opposite of the Deep Heuristic Bot
-- Top Left Bot
-  - This bot plays the first move it finds in reading order (highest first, then left-to-right).
-- Bottom Right Bot
-  - Opposite of the Top Left Bot, plays the last move in reading order
-- Random Bot
-  - Plays a valid move randomly
-- Center Bot
+- Center Bot (Elo: -243)
   - Tries to play move closest to the center of the board
-- Edge Bot
-  - Opposite of the Center Bot, tries to play moves closest to the edge of the board
-- Edge Exclusive Bot
-  - Plays corners if possible. If not, plays edges if possible. If not, plays a random move.
-- Shallow Score Bot
+- Bottom Right Bot (Elo: -52)
+  - Opposite of the Top Left Bot, plays the last move in reading order
+- Top Left Bot (Elo: -8)
+  - This bot plays the first move it finds in reading order (highest first, then left-to-right).
+- Random Bot (Elo: 0)
+  - Plays a valid move randomly
+- Shallow Score Bot (Elo: 67)
   - Plays the move that maximizes the number of pieces sandwiched.
-- Minmax Score Bot
+- Edge Bot (Elo: 96)
+  - Opposite of the Center Bot, tries to play moves closest to the edge of the board
+- Edge Exclusive Bot (Elo: 128)
+  - Plays corners if possible. If not, plays edges if possible. If not, plays a random move.
+- Minmax Score Bot (Elo: 233)
   - Maximizes the number of pieces sandwiched, while minimizing the number of pieces that the opponent can sandwich.
-- Deep Score Bot
+- Deep Score Bot (Elo: 459)
   - Maximizes the score it can get, looking 5 moves ahead.
-- Deep Heuristic Bot
+- Deep Heuristic Bot (Elo: 1040)
   - Maximizes a heuristic, looking 5 moves ahead. The heuristic is the score with additional points for corner and edges. The extra score for corners and edges decreases as the board is filled up.
