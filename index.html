@@ -40,7 +40,7 @@
         <div id="explain">
             <article>
                 <h1>Othello in Rust</h1>
-<p>This is a web application that allows you to play Othello. You can play against yourself or bots that use a variety of strategies.</p>
+<p>This is a web application that allows you to play Othello. You can play against yourself or <a href="#bots">bots</a> that use a variety of strategies.</p>
 <h2>Rules of Othello</h2>
 <p>Othello is a 2-player (black vs white pieces) board game. The two players compete to get the most number of pieces on the board.</p>
 <p>The board starts with two pieces of black and white placed in a cross.</p>
@@ -57,11 +57,11 @@ _ _ _ _ _ _ _ _
 <li>The player playing <strong>black makes the first move</strong>.</li>
 <li>Players alternate plays (black, white, black, white, ...)</li>
 <li>Players must always make a play, unless they have no valid plays.</li>
-<li>The game ends with both players have no valid plays.</li>
+<li>The game ends when both players have no valid plays.</li>
 </ul>
 <h3>Valid plays</h3>
 <p>A valid play is a play that sandwiches your opponent pieces between your pieces.</p>
-<p>For example, the following are <strong>valid</strong> plays for black.</p>
+<p>For example, the following highlighted move is <strong>valid</strong> play for black.</p>
 <pre><code class="language-othello">_ _ _ _ _
 _ x o X _
 _ _ _ _ _
@@ -177,7 +177,7 @@ _ _ _ o _ _ _ _
 <p>If both players have the same number of pieces, the game ends in a tie.</p>
 <h1>Bots</h1>
 <p>This app has several bots that employ various strategies.</p>
-<p>The list is ordered from best strategies to worst.</p>
+<p>The list is ordered from worst strategies to best. A negative elo indicates the strategy is worse than random.</p>
 <ul>
 <li>Deep Negative Heuristic Bot (Elo: -334)<ul>
 <li>This bot plays the worst moves it can find</li>

@@ -28,7 +28,7 @@ _ _ _ _ _ _ _ _
 
 A valid play is a play that sandwiches your opponent pieces between your pieces.
 
-For example, the following are **valid** plays for black.
+For example, the following highlighted move is **valid** play for black.
 
 ```othello
 _ _ _ _ _
@@ -203,7 +203,7 @@ If both players have the same number of pieces, the game ends in a tie.
 
 This app has several bots that employ various strategies.
 
-The list is ordered from best strategies to worst.
+The list is ordered from worst strategies to best. A negative elo indicates the strategy is worse than random.
 
 - Deep Negative Heuristic Bot (Elo: -334)
   - This bot plays the worst moves it can find
