@@ -112,7 +112,7 @@ _ _ _ _ o _
 _ o x _ x x O _
 _ _ _ _ _ _ _ _
 </code></pre>
-<h2>Effect of play</h2>
+<h3>Effect of play</h3>
 <p>After making a play, all opponent pieces the player sandwiches become the player&#39;s piece.</p>
 <p>For example, if black plays, sandwiching one white piece...</p>
 <pre><code class="language-othello">_ _ _ _ _
@@ -146,7 +146,7 @@ _ _ _ o _ _ _ _
 _ _ _ _ _ _ _ _
 </code></pre>
 <p>Note the right horizontal sandwich has a hole in it, so those black pieces do not become white.</p>
-<h2>Skips</h2>
+<h3>Skips</h3>
 <p>The only time a player can skip is when the player has no valid moves.</p>
 <p>For example:</p>
 <pre><code class="language-othello">_ _ _ _ _ _ _ _
@@ -171,12 +171,60 @@ _ _ _ o _ _ _ _
 _ _ _ o _ _ _ _
 _ _ _ o _ _ _ _
 </code></pre>
-<h2>Game end</h2>
+<h3>Game end</h3>
 <p>The game ends when there are no valid moves for both players. Most commonly, this is when the board fills up.</p>
 <p>When the game ends, the <strong>winner</strong> is the player with the <strong>most number of pieces</strong> on the board.</p>
 <p>If both players have the same number of pieces, the game ends in a tie.</p>
 <h1>Bots</h1>
 <p>This app has several bots that employ various strategies.</p>
+<p>The list is ordered roughly from best strategies to worst.</p>
+<ul>
+<li>Deep Negative Heuristic Bot<ul>
+<li>This bot plays the worst moves it can find</li>
+<li>This bot is the opposite of the Deep Heuristic Bot</li>
+</ul>
+</li>
+<li>Top Left Bot<ul>
+<li>This bot plays the first move it finds in reading order (highest first, then left-to-right).</li>
+</ul>
+</li>
+<li>Bottom Right Bot<ul>
+<li>Opposite of the Top Left Bot, plays the last move in reading order</li>
+</ul>
+</li>
+<li>Random Bot<ul>
+<li>Plays a valid move randomly</li>
+</ul>
+</li>
+<li>Center Bot<ul>
+<li>Tries to play move closest to the center of the board</li>
+</ul>
+</li>
+<li>Edge Bot<ul>
+<li>Opposite of the Center Bot, tries to play moves closest to the edge of the board</li>
+</ul>
+</li>
+<li>Edge Exclusive Bot<ul>
+<li>Plays corners if possible. If not, plays edges if possible. If not, plays a random move.</li>
+</ul>
+</li>
+<li>Shallow Score Bot<ul>
+<li>Plays the move that maximizes the number of pieces sandwiched.</li>
+</ul>
+</li>
+<li>Minmax Score Bot<ul>
+<li>Maximizes the number of pieces sandwiched, while minimizing the number of pieces that the opponent can sandwich.</li>
+</ul>
+</li>
+<li>Deep Score Bot<ul>
+<li>Maximizes the score it can get, looking 5 moves ahead.</li>
+</ul>
+</li>
+<li>Deep Heuristic Bot<ul>
+<li>Maximizes a heuristic, looking 5 moves ahead. The heuristic is the score with additional points for corner and edges. The extra score for corners and edges decreases as the board is filled up.</li>
+</ul>
+</li>
+</ul>
 
             </article>
         </div>
