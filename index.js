@@ -57,6 +57,7 @@ const gameState = {
 function initAll() {
     initBotSelector();
     initBoard();
+    initExplainOthelloBoards();
 
     init().then(() => {
         const jsInterface = JsInterface.new();
@@ -271,26 +272,7 @@ function renderBoard(jsInterface) {
         for (let x = 0; x < 8; x++) {
             if (jsRep[y][x] !== lastBoardContents[y][x]) {
                 const elm = boardCellContents[y][x];
-                switch (jsRep[y][x]) {
-                    case 0n:
-                        elm.removeClass("black")
-                        elm.removeClass("white");
-                        elm.class("blank");
-                        elm.clear();
-                        break;
-                    case 1n:
-                        elm.removeClass("black")
-                        elm.class("white");
-                        elm.removeClass("blank");
-                        elm.replaceContents("W");
-                        break;
-                    case -1n:
-                        elm.class("black")
-                        elm.removeClass("white");
-                        elm.removeClass("blank");
-                        elm.replaceContents("B");
-                        break;
-                }
+                renderGameCell(elm, jsRep[y][x]);
             }
         }
     }
@@ -309,6 +291,33 @@ function renderBoard(jsInterface) {
     } else {
         whiteScore.removeClass("leading");
         blackScore.removeClass("leading");
+    }
+}
+
+/**
+ * @param {Elm} cell 
+ * @param {bigint} rep 
+ */
+function renderGameCell(cell, rep) {
+    switch (rep) {
+        case 0n:
+            cell.removeClass("black")
+            cell.removeClass("white");
+            cell.class("blank");
+            cell.clear();
+            break;
+        case 1n:
+            cell.removeClass("black")
+            cell.class("white");
+            cell.removeClass("blank");
+            cell.replaceContents("W");
+            break;
+        case -1n:
+            cell.class("black")
+            cell.removeClass("white");
+            cell.removeClass("blank");
+            cell.replaceContents("B");
+            break;
     }
 }
 
@@ -398,3 +407,60 @@ function updateGameCellSize() {
 }
 
 initAll();
+
+function initExplainOthelloBoards() {
+    const boards = document.querySelectorAll("code.language-othello");
+    for (const board of boards) {
+        const text = board.innerHTML;
+        let elm = board;
+
+        if (board.parentElement?.tagName === "PRE") {
+            elm = board.parentElement;
+        }
+
+        elm.replaceWith(createExplainOthelloBoard(text));
+    }
+}
+
+/**
+ * @param {string} text
+ */
+function createExplainOthelloBoard(text) {
+    const table = new Elm("table").class("gameTable", "readonly").attribute("style", "--game-cell-width: 32px; --game-cell-content-width: 25.6px; --game-cell-content-padding: 3.2px;");
+    const tbody = new Elm("tbody").appendTo(table);
+
+    const textArr = text.split("\n").filter(x => x).map(x => x.split(" ").filter(x => x));
+    const mappings = {
+        'x': -1n,
+        'X': -1n,
+        'o': 1n,
+        'O': 1n,
+        '_': 0n
+    };
+
+    for (let y = 0; y < textArr.length; y++) {
+        const boardRow = [];
+        const tr = new Elm("tr").appendTo(tbody);
+
+        for (let x = 0; x < textArr[y].length; x++) {
+            const cell = new Elm("td")
+                .class("gameCell")
+                .appendTo(tr);
+
+            const content = new Elm().class("gameCellContent", "blank").appendTo(cell);
+
+            renderGameCell(content, mappings[textArr[y][x]] ?? 0n);
+
+            if (['X', 'O'].includes(textArr[y][x])) {
+                content.class("highlighted");
+            }
+
+            boardRow.push(content);
+        }
+
+        boardCellContents.push(boardRow);
+        lastBoardContents.push([0, 0, 0, 0, 0, 0, 0, 0]);
+    }
+
+    return new Elm("p").append(table).elm;
+}

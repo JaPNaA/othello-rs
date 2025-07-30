@@ -142,6 +142,10 @@ body {
     user-select: none;
 }
 
+.gameTable.readonly .gameCell {
+    cursor: default;
+}
+
 .gameCell:hover {
     background-color: #90a790;
 }
@@ -169,6 +173,12 @@ body {
 .gameCellContent.black {
     background-color: #000;
     border-color: #fff;
+}
+
+.gameCellContent.highlighted {
+    outline-style: solid;
+    outline-width: 3px;
+    outline-color: #eb21b9;
 }
 
 .score.leading {
