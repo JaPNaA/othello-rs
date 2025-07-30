@@ -1,6 +1,6 @@
 # Othello in Rust
 
-This is a web application that allows you to play Othello. You can play against yourself or bots that use a variety of strategies.
+This is a web application that allows you to play Othello. You can play against yourself or [bots](#bots) that use a variety of strategies.
 
 ## Rules of Othello
 
@@ -22,7 +22,7 @@ _ _ _ _ _ _ _ _
 - The player playing **black makes the first move**.
 - Players alternate plays (black, white, black, white, ...)
 - Players must always make a play, unless they have no valid plays.
-- The game ends with both players have no valid plays.
+- The game ends when both players have no valid plays.
 
 ### Valid plays
 
