@@ -2,19 +2,32 @@ body {
     font-family: "Fira Sans", sans-serif;
     font-weight: 400;
     font-style: normal;
+    margin: 0;
+}
+
+.main {
+    margin: auto;
+    padding: 8px;
 
     display: grid;
     grid-template:
         "title"
         "game"
-        "side";
+        "side"
+        "explain";
+    width: min-content;
 }
 
 @media only screen and (min-width: 640px) {
-    body {
+    .main {
         grid-template:
-            "title title title" auto
-            "game side _" auto / max-content min-content auto;
+            "title title" auto
+            "game side" auto
+            "explain explain" auto / min-content min-content;
+    }
+
+    #side {
+        margin-left: 8px;
     }
 }
 
@@ -54,6 +67,16 @@ body {
 
 #game {
     grid-area: game;
+    display: flex;
+    flex-direction: column;
+}
+
+#game .gameTableContainer {
+    flex-grow: 1;
+}
+
+#game .status {
+    flex-grow: 0;
 }
 
 #side {
@@ -63,8 +86,9 @@ body {
 }
 
 #side .player {
-    width: 256px;
+    min-width: 256px;
     border: 1px solid currentColor;
+    padding: 8px;
 }
 
 #side .player.black {
@@ -93,14 +117,27 @@ body {
     background-color: #d6d6d6;
 }
 
+.gameTable {
+    border-collapse: collapse;
+}
+
 .gameCell {
     background-color: #a5b4a5;
     width: 48px;
+    width: var(--game-cell-width, 48px);
     height: 48px;
+    height: var(--game-cell-width, 48px);
+    /* prevent cell shrinking */
+    min-width: 48px;
+    min-width: var(--game-cell-width, 48px);
+    max-width: 48px;
+    max-width: var(--game-cell-width, 48px);
+
     cursor: pointer;
     transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: hidden;
     padding: 0;
+    border: 1px solid #697769;
     vertical-align: baseline;
     user-select: none;
 }
@@ -112,10 +149,14 @@ body {
 .gameCellContent.white,
 .gameCellContent.black {
     width: 40px;
+    width: var(--game-cell-content-width, 40px);
     height: 40px;
-    border-radius: 20px;
+    height: var(--game-cell-content-width, 40px);
+    border-radius: 50%;
     margin-top: 4px;
+    margin-top: var(--game-cell-content-padding, 4px);
     margin-left: 4px;
+    margin-left: var(--game-cell-content-padding, 4px);
     border: 1px solid #888;
     color: transparent;
     box-sizing: border-box;
@@ -132,4 +173,15 @@ body {
 
 .score.leading {
     font-weight: bold;
+}
+
+#explain {
+    grid-area: explain;
+}
+
+#explain article {
+    max-width: 720px;
+    margin: auto;
+    margin-top: 4em;
+    margin-bottom: 40vh;
 }

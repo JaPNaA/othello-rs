@@ -8,7 +8,8 @@ const history = new Elm(document.getElementById("history"));
 
 /** @type {HTMLButtonElement} */ // @ts-ignore
 const rerunButton = document.getElementById("rerunButton");
-
+/** @type {HTMLDivElement} */ // @ts-ignore
+const sideElm = document.getElementById("side");
 
 /** @type {HTMLSelectElement} */ // @ts-ignore
 const blackBotSelect = document.getElementById("blackBotSelect");
@@ -28,6 +29,7 @@ const clickListeners = [];
 const whiteScore = new Elm("span").class("score");
 const blackScore = new Elm("span").class("score");
 const gameOverDisplay = new Elm("div");
+const gameTableContainer = new Elm("div").class("gameTableContainer");
 
 /** @type {Map<string, (jsi: JsInterface) => void>} */
 const bots = new Map([
@@ -52,22 +54,24 @@ const gameState = {
     turn: false
 };
 
-initBotSelector();
-initBoard();
+function initAll() {
+    initBotSelector();
+    initBoard();
 
-init().then(() => {
-    const jsInterface = JsInterface.new();
-    runGame(jsInterface);
-
-    rerunButton.addEventListener("click", () => {
+    init().then(() => {
+        const jsInterface = JsInterface.new();
         runGame(jsInterface);
-    });
 
-    clickListeners.push((x, y) => {
-        humanInput(jsInterface, x, y);
-        renderBoard(jsInterface);
+        rerunButton.addEventListener("click", () => {
+            runGame(jsInterface);
+        });
+
+        clickListeners.push((x, y) => {
+            humanInput(jsInterface, x, y);
+            renderBoard(jsInterface);
+        });
     });
-});
+}
 
 function initBotSelector() {
     for (const bot of bots.keys()) {
@@ -81,7 +85,7 @@ function initBoard() {
         game.removeChild(game.lastChild);
     }
 
-    const table = new Elm("table").class("gameTable").appendTo(game);
+    const table = new Elm("table").class("gameTable").appendTo(gameTableContainer.appendTo(game));
     const tbody = new Elm("tbody").appendTo(table);
 
     for (let y = 0; y < 8; y++) {
@@ -107,6 +111,10 @@ function initBoard() {
         new Elm().append("Score -- black: ", blackScore, ", white: ", whiteScore),
         new Elm().append(gameOverDisplay)
     ).appendTo(game);
+
+    // attach resize event handlers
+    updateGameCellSize();
+    addEventListener("resize", () => onResize());
 }
 
 /**
@@ -337,3 +345,56 @@ function getBoard(jsInterface) {
 
     return arr;
 }
+
+let lastWidth = innerWidth;
+let lastHeight = innerHeight;
+let resizeAttempts = 0;
+
+function onResize() {
+    // can't test, but remember iOS resize events (infamously) needing a workaround
+    if (lastWidth === innerWidth && lastHeight === innerHeight) {
+        resizeAttempts = 0;
+        onResizeTick();
+    } else {
+        updateGameCellSize();
+    }
+}
+
+function onResizeTick() {
+    if (lastWidth === innerWidth && lastHeight === innerHeight) {
+        if (resizeAttempts < 10) {
+            resizeAttempts++;
+            setTimeout(() => { onResizeTick(); }, 100);
+        }
+    } else {
+        updateGameCellSize();
+    }
+}
+
+function estimateAvailableWidth() {
+    const innerWidthMinusPadding = innerWidth - 16;
+
+    if (innerWidth > 640) {
+        return innerWidthMinusPadding - sideElm.clientWidth - 8; // 8: margin with sideElm
+    } else {
+        return innerWidthMinusPadding;
+    }
+}
+
+function updateGameCellSize() {
+    lastWidth = innerWidth;
+    lastHeight = innerHeight;
+
+    let availableSize = Math.min(estimateAvailableWidth(), innerHeight * 0.8) - 1; // 16: padding, 1: cell border width
+
+    const spacePerCell = availableSize / 8;
+    const cellSize = spacePerCell - 1; // 1: cell border width
+
+    const cellContentSize = cellSize * 0.8;
+
+    document.body.style.setProperty("--game-cell-width", cellSize + "px");
+    document.body.style.setProperty("--game-cell-content-width", cellContentSize + "px"); // 8: cell padding
+    document.body.style.setProperty("--game-cell-content-padding", (cellSize - cellContentSize) / 2 + "px"); // 8: cell padding
+}
+
+initAll();
