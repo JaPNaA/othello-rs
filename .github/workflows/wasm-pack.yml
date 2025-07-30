@@ -1,4 +1,4 @@
-name: Rust
+name: wasm-pack and deploy
 
 on:
   push:
@@ -9,15 +9,30 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  build:
-
+  buildAndDeploy:
     runs-on: ubuntu-latest
-
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v4
     - name: Build
       run: |
         curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
         cd wasm
-        RUSTFLAGS='--cfg getrandom_backend="wasm_js"' wasm-pack build --target web --dev
+        RUSTFLAGS='--cfg getrandom_backend="wasm_js"' wasm-pack build --target web
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        # Upload entire repository
+        path: '.'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
