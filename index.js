@@ -381,7 +381,7 @@ function onResizeTick() {
 }
 
 function estimateAvailableWidth() {
-    const innerWidthMinusPadding = innerWidth - 16;
+    const innerWidthMinusPadding = innerWidth - 16 - 16; // 16: padding, 16: extra margin, ex, for scrollbar.
 
     if (innerWidth > 640) {
         return innerWidthMinusPadding - sideElm.clientWidth - 8; // 8: margin with sideElm
@@ -394,7 +394,7 @@ function updateGameCellSize() {
     lastWidth = innerWidth;
     lastHeight = innerHeight;
 
-    let availableSize = Math.min(estimateAvailableWidth(), innerHeight * 0.8) - 1; // 16: padding, 1: cell border width
+    let availableSize = Math.min(estimateAvailableWidth(), innerHeight * 0.8) - 1;
 
     const spacePerCell = availableSize / 8;
     const cellSize = spacePerCell - 1; // 1: cell border width
