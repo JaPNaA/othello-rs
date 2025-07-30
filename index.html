@@ -39,9 +39,9 @@
 
         <div id="explain">
             <article>
-                <h1>Othello in Rust</h1>
+                <h1 id="othello-in-rust">Othello in Rust</h1>
 <p>This is a web application that allows you to play Othello. You can play against yourself or <a href="#bots">bots</a> that use a variety of strategies.</p>
-<h2>Rules of Othello</h2>
+<h2 id="rules-of-othello">Rules of Othello</h2>
 <p>Othello is a 2-player (black vs white pieces) board game. The two players compete to get the most number of pieces on the board.</p>
 <p>The board starts with two pieces of black and white placed in a cross.</p>
 <pre><code class="language-othello">_ _ _ _ _ _ _ _
@@ -59,7 +59,7 @@ _ _ _ _ _ _ _ _
 <li>Players must always make a play, unless they have no valid plays.</li>
 <li>The game ends when both players have no valid plays.</li>
 </ul>
-<h3>Valid plays</h3>
+<h3 id="valid-plays">Valid plays</h3>
 <p>A valid play is a play that sandwiches your opponent pieces between your pieces.</p>
 <p>For example, the following highlighted move is <strong>valid</strong> play for black.</p>
 <pre><code class="language-othello">_ _ _ _ _
@@ -112,7 +112,7 @@ _ _ _ _ o _
 _ o x _ x x O _
 _ _ _ _ _ _ _ _
 </code></pre>
-<h3>Effect of play</h3>
+<h3 id="effect-of-play">Effect of play</h3>
 <p>After making a play, all opponent pieces the player sandwiches become the player&#39;s piece.</p>
 <p>For example, if black plays, sandwiching one white piece...</p>
 <pre><code class="language-othello">_ _ _ _ _
@@ -146,7 +146,7 @@ _ _ _ o _ _ _ _
 _ _ _ _ _ _ _ _
 </code></pre>
 <p>Note the right horizontal sandwich has a hole in it, so those black pieces do not become white.</p>
-<h3>Skips</h3>
+<h3 id="skips">Skips</h3>
 <p>The only time a player can skip is when the player has no valid moves.</p>
 <p>For example:</p>
 <pre><code class="language-othello">_ _ _ _ _ _ _ _
@@ -171,11 +171,11 @@ _ _ _ o _ _ _ _
 _ _ _ o _ _ _ _
 _ _ _ o _ _ _ _
 </code></pre>
-<h3>Game end</h3>
+<h3 id="game-end">Game end</h3>
 <p>The game ends when there are no valid moves for both players. Most commonly, this is when the board fills up.</p>
 <p>When the game ends, the <strong>winner</strong> is the player with the <strong>most number of pieces</strong> on the board.</p>
 <p>If both players have the same number of pieces, the game ends in a tie.</p>
-<h1>Bots</h1>
+<h1 id="bots">Bots</h1>
 <p>This app has several bots that employ various strategies.</p>
 <p>The list is ordered from worst strategies to best. A negative elo indicates the strategy is worse than random.</p>
 <ul>
