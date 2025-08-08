@@ -175,17 +175,8 @@ impl Board {
 
     /// Counts the number of placed pieces on the board for a color
     pub fn count_pieces(&self, color: bool) -> u16 {
-        let mut count = 0;
-
-        let mut curr = self.filled & (if color { self.color } else { !self.color });
-
-        // Brian Kernighan Algorithm to count 1 digits in binary
-        while curr > 0 {
-            count += 1;
-            curr &= curr - 1;
-        }
-
-        count
+        let curr = self.filled & (if color { self.color } else { !self.color });
+        curr.count_ones() as u16
     }
 
     pub fn is_occupied(&self, x: i8, y: i8) -> bool {

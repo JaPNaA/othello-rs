@@ -18,7 +18,7 @@ init().then(() => {
 
     let i = 0;
     while (true) {
-        console.log("Running round " + (++i));
+        console.log("Running round " + (++i) + " (@" + Date.now() + ")");
 
         for (const blackPlayer of botList) {
             for (const whitePlayer of botList) {
